@@ -1,6 +1,7 @@
 #include <Arduino.h>
 #include "Samovar.h"
 
+void save_profile();
 void beer_finish();
 void set_heater_state(float setpoint, float temp);
 void set_heater(double dutyCycle);
@@ -16,7 +17,7 @@ void beer_proc() {
   if (SamovarStatusInt != 2000) return;
 
   if (startval == 2000 && !PowerOn) {
-    create_data();                    //создаем файл с данными
+    create_data();  //создаем файл с данными
     PowerOn = true;
     set_power(true);
     run_beer_program(0);
@@ -193,7 +194,6 @@ void IRAM_ATTR check_alarm_beer() {
       run_beer_program(ProgramNum + 1);
     }
   }
-
 }
 
 void set_heater_state(float setpoint, float temp) {
@@ -212,14 +212,13 @@ void set_heater_state(float setpoint, float temp) {
     Setpoint = setpoint;
     Input = temp;
 
-    if (tuning) // run the auto-tuner
+    if (tuning)  // run the auto-tuner
     {
-      if (aTune.Runtime()) // returns 'true' when done
+      if (aTune.Runtime())  // returns 'true' when done
       {
         FinishAutoTune();
       }
-    }
-    else // Execute control algorithm
+    } else  // Execute control algorithm
     {
       heaterPID.Compute();
     }
@@ -233,10 +232,6 @@ void set_heater(double dutyCycle) {
 
   uint32_t newTime = millis();
   uint32_t offTime = periodInSeconds * 1000 * (dutyCycle);
-
-#ifdef __SAMOVAR_DEBUG
-  WriteConsoleLog("dutyCycle = " + String(dutyCycle));
-#endif
 
   if (newTime < oldTime) {
     periodTime += (UINT32_MAX - oldTime + newTime);
@@ -257,10 +252,6 @@ void set_heater(double dutyCycle) {
 
 void setHeaterPosition(bool state) {
   heater_state = state;
-
-#ifdef __SAMOVAR_DEBUG
-  WriteConsoleLog("heater_state = " + String(heater_state));
-#endif
 
   if (state) {
 #ifdef SAMOVAR_USE_POWER
@@ -325,8 +316,7 @@ void set_beer_program(String WProgram) {
   }
 }
 
-void StartAutoTune()
-{
+void StartAutoTune() {
   // REmember the mode we were in
   ATuneModeRemember = heaterPID.GetMode();
 
@@ -341,8 +331,7 @@ void StartAutoTune()
   tuning = true;
 }
 
-void FinishAutoTune()
-{
+void FinishAutoTune() {
   aTune.Cancel();
   tuning = false;
 
@@ -351,19 +340,15 @@ void FinishAutoTune()
   SamSetup.Ki = aTune.GetKi();
   SamSetup.Kd = aTune.GetKd();
 
-  Serial.print("Kp = ");
-  Serial.print(Kp);
-  Serial.print("\tKi = ");
-  Serial.print(Ki);
-  Serial.print("\tKd = ");
-  Serial.println(Kd);
+  WriteConsoleLog("Kp = " + (String)Kp);
+  WriteConsoleLog("Ki = " + (String)Ki);
+  WriteConsoleLog("Kd = " + (String)Kd);
 
   // Re-tune the PID and revert to normal control mode
   heaterPID.SetTunings(SamSetup.Kp, SamSetup.Ki, SamSetup.Kd);
   heaterPID.SetMode(ATuneModeRemember);
 
-  EEPROM.put(0, SamSetup);
-  EEPROM.commit();
+  save_profile();
   read_config();
 
   set_heater_state(0, 50);
