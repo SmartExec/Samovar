@@ -221,7 +221,6 @@ void create_data() {
   fileToWrite.println(str);
   fileToWrite.close();
   fileToAppend = LITTLEFS.open("/data.csv", FILE_APPEND);
-  Serial.println(fileToAppend);
   SteamSensor.PrevTemp = 0;
   PipeSensor.PrevTemp = 0;
   WaterSensor.PrevTemp = 0;
