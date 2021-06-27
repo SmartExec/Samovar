@@ -204,9 +204,21 @@ void create_data() {
     SPIFFS.rename("/data.csv", "/data_old.csv");
   }
   File fileToWrite = SPIFFS.open("/data.csv", FILE_WRITE);
+#ifdef PARTIAL_CSV_DATA
+  String str = "Date";
+  if(String(SamSetup.SteamColor) != "#ffffff") str += ",Steam";
+  if(String(SamSetup.PipeColor) != "#ffffff") str += ",Pipe";
+  if(String(SamSetup.WaterColor) != "#ffffff") str += ",Water";
+  if(String(SamSetup.TankColor) != "#ffffff") str += ",Tank";
+  if(String(SamSetup.PressureColor) != "#ffffff") str += ",Pressure";
+#ifdef WRITE_PROGNUM_IN_LOG
+  if(String(SamSetup.ProgNumColor) != "#ffffff") str += ",ProgNum";
+#endif
+#else
   String str = "Date,Steam,Pipe,Water,Tank,Pressure";
 #ifdef WRITE_PROGNUM_IN_LOG
   str += ",ProgNum";
+#endif
 #endif
   fileToWrite.println(str);
   fileToWrite.close();
@@ -221,6 +233,35 @@ void create_data() {
 String IRAM_ATTR append_data() {
   static bool w;
   w = false;
+#ifdef PARTIAL_CSV_DATA
+  String str = Crt;
+  if(String(SamSetup.SteamColor) != "#ffffff") {
+    str += ",";
+    str += format_float(SteamSensor.avgTemp, 3);
+  }
+  if(String(SamSetup.PipeColor) != "#ffffff") {
+    str += ",";
+    str += format_float(PipeSensor.avgTemp, 3);
+  }
+  if(String(SamSetup.WaterColor) != "#ffffff") {
+    str += ",";
+    str += format_float(WaterSensor.avgTemp, 3);
+  }
+  if(String(SamSetup.TankColor) != "#ffffff") {
+    str += ",";
+    str += format_float(TankSensor.avgTemp, 3);
+  }
+  if(String(SamSetup.PressureColor) != "#ffffff") {
+    str += ",";
+    str += format_float(bme_pressure, 2);
+  }
+#ifdef WRITE_PROGNUM_IN_LOG
+  if(String(SamSetup.ProgNumColor) != "#ffffff") {
+    str += ",";
+    str += ProgramNum + 1;
+  }
+#endif
+#else
   String str = Crt + ",";
   str += format_float(SteamSensor.avgTemp, 3);
   str += ",";
@@ -231,10 +272,11 @@ String IRAM_ATTR append_data() {
   str += format_float(TankSensor.avgTemp, 3);
   str += ",";
   str += format_float(bme_pressure, 2);
-
+  
 #ifdef WRITE_PROGNUM_IN_LOG
   str += ",";
   str += ProgramNum + 1;
+#endif
 #endif
 
   //Если значения лога совпадают с предыдущим - в файл писать не будем

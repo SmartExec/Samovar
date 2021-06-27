@@ -105,6 +105,8 @@ String indexKeyProcessor(const String& var)
   else if (var == "WaterColor") return (String)SamSetup.WaterColor;
   else if (var == "TankColor") return (String)SamSetup.TankColor;
   else if (var == "ACPColor") return (String)SamSetup.ACPColor;
+  else if (var == "PressureColor") return (String)SamSetup.PressureColor;
+  else if (var == "ProgNumColor") return (String)SamSetup.ProgNumColor;
   else if (var == "WProgram") {
     if (Samovar_Mode == SAMOVAR_BEER_MODE) return get_beer_program();
     else return get_program(CAPACITY_NUM * 2);
@@ -163,6 +165,8 @@ String setupKeyProcessor(const String& var)
   else if (var == "WaterColor") return (String)SamSetup.WaterColor;
   else if (var == "TankColor") return (String)SamSetup.TankColor;
   else if (var == "ACPColor") return (String)SamSetup.ACPColor;
+  else if (var == "PressureColor") return (String)SamSetup.PressureColor;
+  else if (var == "ProgNumColor") return (String)SamSetup.ProgNumColor;
   else if (var == "RECT" && SamSetup.Mode == 0) return "selected";
   else if (var == "DIST" && SamSetup.Mode == 1) return "selected";
   else if (var == "BEER" && SamSetup.Mode == 2) return "selected";
@@ -317,6 +321,12 @@ void  handleSave(AsyncWebServerRequest *request) {
   }
   if (request->hasArg("ACPColor")) {
     request->arg("ACPColor").toCharArray(SamSetup.ACPColor, request->arg("ACPColor").length() + 1);
+  }
+  if (request->hasArg("PressureColor")) {
+    request->arg("PressureColor").toCharArray(SamSetup.PressureColor, request->arg("PressureColor").length() + 1);
+  }
+  if (request->hasArg("ProgNumColor")) {
+    request->arg("ProgNumColor").toCharArray(SamSetup.ProgNumColor, request->arg("ProgNumColor").length() + 1);
   }
   if (request->hasArg("mode")) {
     SamSetup.Mode = request->arg("mode").toInt();

@@ -239,7 +239,7 @@ function SaveFormToFile(form) {
 <h2>Сопротивление тэна для расчета мощности: <input name='HeaterR' type='text' value='%HeaterR%'> Ом</h2>
 <h2>Периодичность записи данных в лог: <input name='LogPeriod' type='text' value='%LogPeriod%'> сек</h2>
 <input id='resetwifi' type='submit' name='resetwifi' value='Сбросить настройки WiFI' onclick='sendbutton("resetwifi=1");'>
-<h2><p>Цвета для температур:</p>
+<h2><p>Цвета для графиков:</p>
 <div>
     <input type="color" id="SteamColor" name="SteamColor" value="%SteamColor%">
     <label for="SteamColor">Температура пара</label>
@@ -260,6 +260,14 @@ function SaveFormToFile(form) {
     <input type="color" id="ACPColor" name="ACPColor" value="%ACPColor%">
     <label for="ACPColor">Температура датчика в ТСА</label>
 </div>
+<div>
+    <input type="color" id="PressureColor" name="PressureColor" value="%PressureColor%">
+    <label for="PressureColor">Атмосферное давление</label>
+</div>
+<div>
+    <input type="color" id="ProgNumColor" name="ProgNumColor" value="%ProgNumColor%">
+    <label for="ProgNumColor">Строка программы</label>
+</div>
 </h2>
 <p><a href="https://www.w3schools.com/colors/colors_picker.asp" target="blank">цвета можно подобрать тут</a></p>
 <h2>Настройки уровней для реле
@@ -267,28 +275,28 @@ function SaveFormToFile(form) {
 Реле 1
 <select name="rele1">
   <option value="0" %RAL%>LOW</option>
-  <option value="1" %RAH%>HIGHT</option>
+  <option value="1" %RAH%>HIGH</option>
 </select>
 </div>
 <div>
 Реле 2
 <select name="rele2">
   <option value="0" %RBL%>LOW</option>
-  <option value="1" %RBH%>HIGHT</option>
+  <option value="1" %RBH%>HIGH</option>
 </select>
 </div>
 <div>
 Реле 3
 <select name="rele3">
   <option value="0" %RCL%>LOW</option>
-  <option value="1" %RCH%>HIGHT</option>
+  <option value="1" %RCH%>HIGH</option>
 </select>
 </div>
 <div>
 Реле 4
 <select name="rele4">
   <option value="0" %RDL%>LOW</option>
-  <option value="1" %RDH%>HIGHT</option>
+  <option value="1" %RDH%>HIGH</option>
 </select>
 </div>
 </h2>

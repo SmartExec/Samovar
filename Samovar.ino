@@ -535,6 +535,10 @@ void setup() {
     memcpy(str4, SamSetup.TankColor, sizeof(str4));
     char str5[] = "grey\0";
     memcpy(str5, SamSetup.ACPColor, sizeof(str5));
+    char str6[] = "#000000";
+    memcpy(str6, SamSetup.PressureColor, sizeof(str6));
+    memcpy(str6, SamSetup.ProgNumColor, sizeof(str6));
+    
     SamSetup.blynkauth[0] = '\0';
     SamSetup.videourl[0] = '\0';
     EEPROM.put(0, SamSetup);

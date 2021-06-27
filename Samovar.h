@@ -364,6 +364,8 @@ struct SetupEEPROM {
   float Ki;
   float Kd;
   float StbVoltage;                                             //Напряжение регулятора в режиме поддержания температуры
+  char PressureColor[20];
+  char ProgNumColor[20];
 };
 
 struct DSSensor {
