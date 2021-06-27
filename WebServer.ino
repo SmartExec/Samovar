@@ -44,7 +44,6 @@ void WebServerInit(void) {
   server.serveStatic("/style.css", LITTLEFS, "/style.css");
   server.serveStatic("/favicon.ico", LITTLEFS, "/favicon.ico");
   server.serveStatic("/chart.htm", LITTLEFS, "/chart.htm").setTemplateProcessor(indexKeyProcessor);
-//  server.serveStatic("/data.csv", LITTLEFS, "/data.csv");
   server.serveStatic("/calibrate.htm", LITTLEFS, "/calibrate.htm").setTemplateProcessor(calibrateKeyProcessor);
   server.serveStatic("/manual.htm", LITTLEFS, "/manual.htm");
 

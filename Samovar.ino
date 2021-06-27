@@ -40,14 +40,8 @@
 #include "Samovar.h"
 
 #include <FS.h>
-#ifdef USE_LITTLEFS
-//  #define SPIFFS LITTLEFS
-  #include <LITTLEFS.h> 
-#else
-  #include <SPIFFS.h>
-#endif
+#include <LITTLEFS.h> 
 #include <SPIFFSEditor.h>
-
 
 #ifdef USE_BME680
 #include <Adafruit_BME680.h>
