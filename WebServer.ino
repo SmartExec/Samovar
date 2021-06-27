@@ -13,25 +13,25 @@ void set_pump_speed(float pumpspeed, bool continue_process);
 void change_samovar_mode() {
   if (Samovar_Mode == SAMOVAR_BEER_MODE) {
     server.on("/", HTTP_GET, [](AsyncWebServerRequest *request) {
-      request->send(SPIFFS, "/beer.htm", String(), false, indexKeyProcessor);
+      request->send(LITTLEFS, "/beer.htm", String(), false, indexKeyProcessor);
     });
     server.on("/index.htm", HTTP_GET, [](AsyncWebServerRequest *request) {
-      request->send(SPIFFS, "/beer.htm", String(), false, indexKeyProcessor);
+      request->send(LITTLEFS, "/beer.htm", String(), false, indexKeyProcessor);
     });
   } else if (Samovar_Mode == SAMOVAR_DISTILLATION_MODE) {
     server.on("/", HTTP_GET, [](AsyncWebServerRequest *request) {
-      request->send(SPIFFS, "/distiller.htm", String(), false, indexKeyProcessor);
+      request->send(LITTLEFS, "/distiller.htm", String(), false, indexKeyProcessor);
     });
     server.on("/index.htm", HTTP_GET, [](AsyncWebServerRequest *request) {
-      request->send(SPIFFS, "/distiller.htm", String(), false, indexKeyProcessor);
+      request->send(LITTLEFS, "/distiller.htm", String(), false, indexKeyProcessor);
     });
   } else {
     Samovar_Mode = SAMOVAR_RECTIFICATION_MODE;
     server.on("/", HTTP_GET, [](AsyncWebServerRequest *request) {
-      request->send(SPIFFS, "/index.htm", String(), false, indexKeyProcessor);
+      request->send(LITTLEFS, "/index.htm", String(), false, indexKeyProcessor);
     });
     server.on("/index.htm", HTTP_GET, [](AsyncWebServerRequest *request) {
-      request->send(SPIFFS, "/index.htm", String(), false, indexKeyProcessor);
+      request->send(LITTLEFS, "/index.htm", String(), false, indexKeyProcessor);
     });
   }
   Samovar_CR_Mode = Samovar_Mode;
@@ -41,17 +41,21 @@ void WebServerInit(void) {
 
   FS_init();  // Включаем работу с файловой системой
 
-  server.serveStatic("/style.css", SPIFFS, "/style.css");
-  server.serveStatic("/favicon.ico", SPIFFS, "/favicon.ico");
-  server.serveStatic("/chart.htm", SPIFFS, "/chart.htm").setTemplateProcessor(indexKeyProcessor);
-  server.serveStatic("/data.csv", SPIFFS, "/data.csv");
-  server.serveStatic("/calibrate.htm", SPIFFS, "/calibrate.htm").setTemplateProcessor(calibrateKeyProcessor);
-  server.serveStatic("/manual.htm", SPIFFS, "/manual.htm");
+  server.serveStatic("/style.css", LITTLEFS, "/style.css");
+  server.serveStatic("/favicon.ico", LITTLEFS, "/favicon.ico");
+  server.serveStatic("/chart.htm", LITTLEFS, "/chart.htm").setTemplateProcessor(indexKeyProcessor);
+//  server.serveStatic("/data.csv", LITTLEFS, "/data.csv");
+  server.serveStatic("/calibrate.htm", LITTLEFS, "/calibrate.htm").setTemplateProcessor(calibrateKeyProcessor);
+  server.serveStatic("/manual.htm", LITTLEFS, "/manual.htm");
 
   change_samovar_mode();
 
   load_profile();
 
+  server.on("/data.csv", HTTP_GET, [](AsyncWebServerRequest *request) {
+    fileToAppend.flush();
+    request->send(LITTLEFS, "/data.csv", String());
+  });
   server.on("/ajax", HTTP_GET, [](AsyncWebServerRequest *request) {
     //TempStr = temp;
     getjson();
@@ -73,7 +77,7 @@ void WebServerInit(void) {
     get_old_data_log(request);
   });
 
-  server.serveStatic("/setup.htm", SPIFFS, "/setup.htm").setTemplateProcessor(setupKeyProcessor);
+  server.serveStatic("/setup.htm", LITTLEFS, "/setup.htm").setTemplateProcessor(setupKeyProcessor);
 
   server.on("/save", HTTP_POST, [](AsyncWebServerRequest *request) {
     //Serial.println("SAVE");
@@ -553,7 +557,8 @@ void calibrate_command(AsyncWebServerRequest *request) {
 }
 
 void get_data_log(AsyncWebServerRequest *request) {
-  AsyncWebServerResponse *response = request->beginResponse(SPIFFS, "/data.csv", String(), true);
+  fileToAppend.flush();
+  AsyncWebServerResponse *response = request->beginResponse(LITTLEFS, "/data.csv", String(), true);
   response->addHeader("Content-Type", "application/octet-stream");
   response->addHeader("Content-Description", "File Transfer");
   //response->addHeader("Content-Disposition", "attachment; filename='data.csv'");
@@ -563,7 +568,7 @@ void get_data_log(AsyncWebServerRequest *request) {
 }
 
 void get_old_data_log(AsyncWebServerRequest *request) {
-  AsyncWebServerResponse *response = request->beginResponse(SPIFFS, "/data_old.csv", String(), true);
+  AsyncWebServerResponse *response = request->beginResponse(LITTLEFS, "/data_old.csv", String(), true);
   response->addHeader("Content-Type", "application/octet-stream");
   response->addHeader("Content-Description", "File Transfer");
   //response->addHeader("Content-Disposition", "attachment; filename='data_old.csv'");

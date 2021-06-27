@@ -22,8 +22,6 @@
 #include <Update.h>
 #include <LiquidMenu.h>
 #include <EEPROM.h>
-#include <SPIFFS.h>
-#include <SPIFFSEditor.h>
 #include <ESPAsyncWiFiManager.h>
 
 #define DRIVER_STEP_TIME 1
@@ -40,6 +38,16 @@
 #include <ESP32Servo.h>
 
 #include "Samovar.h"
+
+#include <FS.h>
+#ifdef USE_LITTLEFS
+//  #define SPIFFS LITTLEFS
+  #include <LITTLEFS.h> 
+#else
+  #include <SPIFFS.h>
+#endif
+#include <SPIFFSEditor.h>
+
 
 #ifdef USE_BME680
 #include <Adafruit_BME680.h>
