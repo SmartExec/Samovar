@@ -82,7 +82,7 @@ var valueAxis = chart.yAxes.push(new am4charts.ValueAxis());
 var valueAxis1 = chart.yAxes.push(new am4charts.ValueAxis());
 var valueAxis2 = chart.yAxes.push(new am4charts.ValueAxis());
 // Create series
-if("%SteamColor%" != "#ffffff") {
+if(%SteamChecked%) {
   var series1 = chart.series.push(new am4charts.LineSeries());
   series1.dataFields.valueY = "Steam";
   series1.dataFields.categoryX = "Date";
@@ -90,10 +90,9 @@ if("%SteamColor%" != "#ffffff") {
   series1.strokeWidth = 3;
   series1.tensionX = 0.7;
   series1.tooltipText = "{valueY.value}";
-  //series1.bullets.push(new am4charts.CircleBullet());
-  series1.fill = series1.realStroke = series1.stroke = am4core.color("%SteamColor%")
+  series1.fill = series1.stroke = am4core.color("%SteamColor%")
 }
-if("%PipeColor%" != "#ffffff") {
+if(%PipeChecked%) {
   var series2 = chart.series.push(new am4charts.LineSeries());
   series2.dataFields.valueY = "Pipe";
   series2.dataFields.categoryX = "Date";
@@ -101,10 +100,9 @@ if("%PipeColor%" != "#ffffff") {
   series2.strokeWidth = 3;
   series2.tensionX = 0.7;
   series2.tooltipText = "{valueY.value}";
-  //series2.bullets.push(new am4charts.CircleBullet());
-  series2.fill = series2.realStroke = series2.stroke = am4core.color("%PipeColor%")
+  series2.fill = series2.stroke = am4core.color("%PipeColor%")
 }
-if("%WaterColor%" != "#ffffff") {
+if(%WaterChecked%) {
   var series3 = chart.series.push(new am4charts.LineSeries());
   series3.dataFields.valueY = "Water";
   series3.dataFields.categoryX = "Date";
@@ -112,10 +110,9 @@ if("%WaterColor%" != "#ffffff") {
   series3.strokeWidth = 3;
   series3.tensionX = 0.7;
   series3.tooltipText = "{valueY.value}";
-  //series3.bullets.push(new am4charts.CircleBullet());
-  series3.fill = series3.realStroke = series3.stroke = am4core.color("%WaterColor%");
+  series3.fill = series3.stroke = am4core.color("%WaterColor%");
 }
-if("%TankColor%" != "#ffffff") {
+if(%TankChecked%) {
   var series4 = chart.series.push(new am4charts.LineSeries());
   series4.dataFields.valueY = "Tank";
   series4.dataFields.categoryX = "Date";
@@ -123,32 +120,63 @@ if("%TankColor%" != "#ffffff") {
   series4.strokeWidth = 3;
   series4.tensionX = 0.7;
   series4.tooltipText = "{valueY.value}";
-  //series4.bullets.push(new am4charts.CircleBullet());
-  series4.fill = series4.realStroke = series4.stroke = am4core.color("%TankColor%");
-  
+  series4.fill = series4.stroke = am4core.color("%TankColor%");
 }
-if("%PressureColor%" != "#ffffff") {
+if(%ACPChecked%) {
   var series5 = chart.series.push(new am4charts.LineSeries());
-  series5.yAxis = valueAxis1;
-  series5.dataFields.valueY = "Pressure";
+  series5.dataFields.valueY = "ACP";
   series5.dataFields.categoryX = "Date";
-  series5.name = "Атмосферное давление";
+  series5.name = "Температура датчика в ТСА";
   series5.strokeWidth = 3;
   series5.tensionX = 0.7;
   series5.tooltipText = "{valueY.value}";
-  series5.fill = series5.realStroke = series5.stroke = am4core.color("%PressureColor%")
+  series5.fill = series5.stroke = am4core.color("%ACPColor%");
 }
-if("%ProgNumColor%" != "#ffffff") {
+if(%PressureChecked%) {
   var series6 = chart.series.push(new am4charts.LineSeries());
-  series6.yAxis = valueAxis2;
-  series6.dataFields.valueY = "ProgNum";
+  series6.yAxis = valueAxis1;
+  series6.dataFields.valueY = "Pressure";
   series6.dataFields.categoryX = "Date";
-  series6.name = "Строка программы";
+  series6.name = "Атмосферное давление";
   series6.strokeWidth = 3;
   series6.tensionX = 0.7;
   series6.tooltipText = "{valueY.value}";
-  series6.fill = series6.realStroke = series6.stroke = am4core.color("%ProgNumColor%")
+  series6.fill = series6.stroke = am4core.color("%PressureColor%")
 }
+if(%ProgNumChecked%) {
+  var series7 = chart.series.push(new am4charts.LineSeries());
+  series7.yAxis = valueAxis2;
+  series7.dataFields.valueY = "ProgNum";
+  series7.dataFields.categoryX = "Date";
+  series7.name = "Строка программы";
+  series7.strokeWidth = 3;
+  series7.tensionX = 0.7;
+  series7.tooltipText = "{valueY.value}";
+  series7.fill = series7.stroke = am4core.color("%ProgNumColor%")
+}
+if(%WFflowRateChecked%) {
+  var series8 = chart.series.push(new am4charts.LineSeries());
+  series8.yAxis = valueAxis2;
+  series8.dataFields.valueY = "WFflowRate";
+  series8.dataFields.categoryX = "Date";
+  series8.name = "Скорость расхода воды";
+  series8.strokeWidth = 3;
+  series8.tensionX = 0.7;
+  series8.tooltipText = "{valueY.value}";
+  series8.fill = series8.stroke = am4core.color("%WFflowRateColor%")
+}
+if(%PowerChecked%) {
+  var series9 = chart.series.push(new am4charts.LineSeries());
+  series9.yAxis = valueAxis2;
+  series9.dataFields.valueY = "Power";
+  series9.dataFields.categoryX = "Date";
+  series9.name = "Процент мощности";
+  series9.strokeWidth = 3;
+  series9.tensionX = 0.7;
+  series9.tooltipText = "{valueY.value}";
+  series9.fill = series9.stroke = am4core.color("%PowerColor%")
+}
+
 //chart.cursor = new am4charts.XYCursor();
 //chart.cursor.snapToSeries = series1;
 //chart.cursor.xAxis = dateAxis;

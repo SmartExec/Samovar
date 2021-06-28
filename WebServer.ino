@@ -52,7 +52,8 @@ void WebServerInit(void) {
   load_profile();
 
   server.on("/data.csv", HTTP_GET, [](AsyncWebServerRequest *request) {
-    fileToAppend.flush();
+    if(fileToAppend)
+      fileToAppend.flush();
     request->send(LITTLEFS, "/data.csv", String());
   });
   server.on("/ajax", HTTP_GET, [](AsyncWebServerRequest *request) {
@@ -119,6 +120,10 @@ String indexKeyProcessor(const String &var) {
     return (String)SamSetup.PressureColor;
   else if (var == "ProgNumColor")
     return (String)SamSetup.ProgNumColor;
+  else if (var == "WFflowRateColor")
+    return (String)SamSetup.WFflowRateColor;
+  else if (var == "PowerColor")
+    return (String)SamSetup.PowerColor;
   else if (var == "WProgram") {
     if (Samovar_Mode == SAMOVAR_BEER_MODE) return get_beer_program();
     else
@@ -129,7 +134,43 @@ String indexKeyProcessor(const String &var) {
     if ((String)SamSetup.videourl != "") return "inline";
     else
       return "none";
-  };
+  } else if (var == "SteamChecked") {
+    if (SamSetup.LineEnabled.SteamLineEnable) return "true";
+    else
+      return "false";
+  } else if (var == "PipeChecked") {
+    if (SamSetup.LineEnabled.PipeLineEnable) return "true";
+    else
+      return "false";
+  } else if (var == "WaterChecked") {
+    if (SamSetup.LineEnabled.WaterLineEnable) return "true";
+    else
+      return "false";
+  } else if (var == "TankChecked") {
+    if (SamSetup.LineEnabled.TankLineEnable) return "true";
+    else
+      return "false";
+  } else if (var == "ACPChecked") {
+    if (SamSetup.LineEnabled.ACPLineEnable) return "true";
+    else
+      return "false";
+  } else if (var == "PressureChecked") {
+    if (SamSetup.LineEnabled.PressureLineEnable) return "true";
+    else
+      return "false";
+  } else if (var == "ProgNumChecked") {
+    if (SamSetup.LineEnabled.ProgNumLineEnable) return "true";
+    else
+      return "false";
+  } else if (var == "WFflowRateChecked") {
+    if (SamSetup.LineEnabled.WFflowRateLineEnable) return "true";
+    else
+      return "false";
+  } else if (var == "PowerChecked") {
+    if (SamSetup.LineEnabled.PowerLineEnable) return "true";
+    else
+      return "false";
+  }
   return "";
 }
 
@@ -195,7 +236,44 @@ String setupKeyProcessor(const String &var) {
     if (SamSetup.useautospeed) return "checked='true'";
     else
       return "";
-  } else if (var == "autospeed")
+  } else if (var == "SteamChecked") {
+    if (SamSetup.LineEnabled.SteamLineEnable) return "checked='true'";
+    else
+      return "";
+  } else if (var == "PipeChecked") {
+    if (SamSetup.LineEnabled.PipeLineEnable) return "checked='true'";
+    else
+      return "";
+  } else if (var == "WaterChecked") {
+    if (SamSetup.LineEnabled.WaterLineEnable) return "checked='true'";
+    else
+      return "";
+  } else if (var == "TankChecked") {
+    if (SamSetup.LineEnabled.TankLineEnable) return "checked='true'";
+    else
+      return "";
+  } else if (var == "ACPChecked") {
+    if (SamSetup.LineEnabled.ACPLineEnable) return "checked='true'";
+    else
+      return "";
+  } else if (var == "PressureChecked") {
+    if (SamSetup.LineEnabled.PressureLineEnable) return "checked='true'";
+    else
+      return "";
+  } else if (var == "ProgNumChecked") {
+    if (SamSetup.LineEnabled.ProgNumLineEnable) return "checked='true'";
+    else
+      return "";
+  } else if (var == "WFflowRateChecked") {
+    if (SamSetup.LineEnabled.WFflowRateLineEnable) return "checked='true'";
+    else
+      return "";
+  } else if (var == "PowerChecked") {
+    if (SamSetup.LineEnabled.PowerLineEnable) return "checked='true'";
+    else
+      return "";
+  }
+  else if (var == "autospeed")
     return (String)SamSetup.autospeed;
   else if (var == "DistTemp")
     return (String)SamSetup.DistTemp;
@@ -213,6 +291,10 @@ String setupKeyProcessor(const String &var) {
     return (String)SamSetup.PressureColor;
   else if (var == "ProgNumColor")
     return (String)SamSetup.ProgNumColor;
+  else if (var == "WFflowRateColor")
+    return (String)SamSetup.WFflowRateColor;
+  else if (var == "PowerColor")
+    return (String)SamSetup.PowerColor;
   else if (var == "RECT" && SamSetup.Mode == 0)
     return "selected";
   else if (var == "DIST" && SamSetup.Mode == 1)
@@ -350,6 +432,51 @@ void handleSave(AsyncWebServerRequest *request) {
     SamSetup.useautospeed = true;
   }
 
+  SamSetup.LineEnabled.SteamLineEnable = false;
+  if (request->hasArg("SteamLineEnable")) {
+    SamSetup.LineEnabled.SteamLineEnable = true;
+  }
+
+  SamSetup.LineEnabled.PipeLineEnable = false;
+  if (request->hasArg("PipeLineEnable")) {
+    SamSetup.LineEnabled.PipeLineEnable = true;
+  }
+
+  SamSetup.LineEnabled.WaterLineEnable = false;
+  if (request->hasArg("WaterLineEnable")) {
+    SamSetup.LineEnabled.WaterLineEnable = true;
+  }
+
+  SamSetup.LineEnabled.TankLineEnable = false;
+  if (request->hasArg("TankLineEnable")) {
+    SamSetup.LineEnabled.TankLineEnable = true;
+  }
+
+  SamSetup.LineEnabled.ACPLineEnable = false;
+  if (request->hasArg("ACPLineEnable")) {
+    SamSetup.LineEnabled.ACPLineEnable = true;
+  }
+
+  SamSetup.LineEnabled.PressureLineEnable = false;
+  if (request->hasArg("PressureLineEnable")) {
+    SamSetup.LineEnabled.PressureLineEnable = true;
+  }
+
+  SamSetup.LineEnabled.ProgNumLineEnable = false;
+  if (request->hasArg("ProgNumLineEnable")) {
+    SamSetup.LineEnabled.ProgNumLineEnable = true;
+  }
+
+  SamSetup.LineEnabled.WFflowRateLineEnable = false;
+  if (request->hasArg("WFflowRateLineEnable")) {
+    SamSetup.LineEnabled.WFflowRateLineEnable = true;
+  }
+
+  SamSetup.LineEnabled.PowerLineEnable = false;
+  if (request->hasArg("PowerLineEnable")) {
+    SamSetup.LineEnabled.PowerLineEnable = true;
+  }
+
   if (request->hasArg("autospeed")) {
     SamSetup.autospeed = request->arg("autospeed").toInt();
   }
@@ -391,6 +518,12 @@ void handleSave(AsyncWebServerRequest *request) {
   }
   if (request->hasArg("ProgNumColor")) {
     request->arg("ProgNumColor").toCharArray(SamSetup.ProgNumColor, request->arg("ProgNumColor").length() + 1);
+  }
+  if (request->hasArg("WFflowRateColor")) {
+    request->arg("WFflowRateColor").toCharArray(SamSetup.WFflowRateColor, request->arg("WFflowRateColor").length() + 1);
+  }
+  if (request->hasArg("PowerColor")) {
+    request->arg("PowerColor").toCharArray(SamSetup.PowerColor, request->arg("PowerColor").length() + 1);
   }
   if (request->hasArg("mode")) {
     SamSetup.Mode = request->arg("mode").toInt();
@@ -556,7 +689,8 @@ void calibrate_command(AsyncWebServerRequest *request) {
 }
 
 void get_data_log(AsyncWebServerRequest *request) {
-  fileToAppend.flush();
+  if(fileToAppend)
+    fileToAppend.flush();
   AsyncWebServerResponse *response = request->beginResponse(LITTLEFS, "/data.csv", String(), true);
   response->addHeader("Content-Type", "application/octet-stream");
   response->addHeader("Content-Description", "File Transfer");

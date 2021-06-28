@@ -313,6 +313,45 @@ enum SAMOVAR_MODE {SAMOVAR_RECTIFICATION_MODE, SAMOVAR_DISTILLATION_MODE, SAMOVA
 volatile SAMOVAR_MODE Samovar_Mode;
 volatile SAMOVAR_MODE Samovar_CR_Mode;
 
+typedef union {
+  uint32_t data;                           // Allow bit manipulation
+  struct {
+    uint32_t SteamLineEnable      : 1;                  // bit 0
+    uint32_t PipeLineEnable       : 1;                  // bit 1
+    uint32_t WaterLineEnable      : 1;                  // bit 2
+    uint32_t TankLineEnable       : 1;                  // bit 3
+    uint32_t ACPLineEnable        : 1;                  // bit 4
+    uint32_t PressureLineEnable   : 1;                  // bit 5
+    uint32_t ProgNumLineEnable    : 1;                  // bit 6
+    uint32_t WFflowRateLineEnable : 1;                  // bit 7
+    uint32_t PowerLineEnable      : 1;                  // bit 8
+    uint32_t spare09 : 1;                  // bit 9
+    uint32_t spare10 : 1;                  // bit 10
+    uint32_t spare11 : 1;                  // bit 11
+    uint32_t spare12 : 1;                  // bit 12
+    uint32_t spare13 : 1;                  // bit 13
+    uint32_t spare14 : 1;                  // bit 14
+    uint32_t spare15 : 1;                  // bit 15
+    uint32_t spare16 : 1;                  // bit 16
+    uint32_t spare17 : 1;                  // bit 17
+    uint32_t spare18 : 1;                  // bit 18
+    uint32_t spare19 : 1;                  // bit 19
+    uint32_t spare20 : 1;                  // bit 20
+    uint32_t spare21 : 1;                  // bit 21
+    uint32_t spare22 : 1;                  // bit 22
+    uint32_t spare23 : 1;                  // bit 23
+    uint32_t spare24 : 1;                  // bit 24
+    uint32_t spare25 : 1;                  // bit 25
+    uint32_t spare26 : 1;                  // bit 26
+    uint32_t spare27 : 1;                  // bit 27
+    uint32_t spare28 : 1;                  // bit 28
+    uint32_t spare29 : 1;                  // bit 29
+    uint32_t spare30 : 1;                  // bit 30
+    uint32_t spare31 : 1;                  // bit 31
+  };
+} LineEnabled_t;
+
+
 struct SetupEEPROM {
   byte flag;                                                   //Флаг для записи в память
   float DeltaSteamTemp;                                        //Корректировка температурного датчика
@@ -361,6 +400,9 @@ struct SetupEEPROM {
   float StbVoltage;                                             //Напряжение регулятора в режиме поддержания температуры
   char PressureColor[20];
   char ProgNumColor[20];
+  char WFflowRateColor[20];
+  char PowerColor[20];
+  LineEnabled_t LineEnabled;
 };
 
 struct DSSensor {
@@ -466,7 +508,7 @@ bool msgfl;                                                     // Флаг дл
 String ofl;                                                     // Openlog filename
 bool mixer_status;                                              // Статус работы мешалки
 
-
+volatile float target_power_percent = 100;
 String current_power_mode;                                      // Режим работы регулятора напряжения
 #ifdef SAMOVAR_USE_POWER
 volatile float current_power_volt;                              // Текущее напряжение регулятора

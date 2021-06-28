@@ -560,6 +560,8 @@ void setup() {
     char str6[] = "#000000";
     memcpy(str6, SamSetup.PressureColor, sizeof(str6));
     memcpy(str6, SamSetup.ProgNumColor, sizeof(str6));
+    memcpy(str6, SamSetup.WFflowRateColor, sizeof(str6));
+    memcpy(str6, SamSetup.PowerColor, sizeof(str6));
     
     SamSetup.blynkauth[0] = '\0';
     SamSetup.videourl[0] = '\0';

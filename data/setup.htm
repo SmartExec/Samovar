@@ -241,33 +241,49 @@ function SaveFormToFile(form) {
 <input id='resetwifi' type='submit' name='resetwifi' value='Сбросить настройки WiFI' onclick='sendbutton("resetwifi=1");'>
 <h2><p>Цвета для графиков:</p>
 <div>
-    <input id='SteamLineEnable' type='checkbox' name='SteamLineEnable' value='SteamLineEnable' checked='true'>
     <input type="color" id="SteamColor" name="SteamColor" value="%SteamColor%">
-    <label for="SteamColor">Температура пара</label>
+    <input id="SteamLineEnable" type="checkbox" name="SteamLineEnable" value="%SteamLineEnable%" %SteamChecked%>
+    <label for="SteamLineEnable">Температура пара</label>
 </div>
 <div>
     <input type="color" id="PipeColor" name="PipeColor" value="%PipeColor%">
-    <label for="PipeColor">Температура датчика в царге</label>
+    <input id="PipeLineEnable" type="checkbox" name="PipeLineEnable" value="%PipeLineEnable%" %PipeChecked%>
+    <label for="PipeLineEnable">Температура датчика в царге</label>
 </div>
 <div>
     <input type="color" id="WaterColor" name="WaterColor" value="%WaterColor%">
-    <label for="WaterColor">Температура воды</label>
+    <input id="WaterLineEnable" type="checkbox" name="WaterLineEnable" value="%WaterLineEnable%" %WaterChecked%>
+    <label for="WaterLineEnable">Температура воды</label>
 </div>
 <div>
     <input type="color" id="TankColor" name="TankColor" value="%TankColor%">
-    <label for="TankColor">Температура датчика в кубе</label>
+    <input id="TankLineEnable" type="checkbox" name="TankLineEnable" value="%TankLineEnable%" %TankChecked%>
+    <label for="TankLineEnable">Температура датчика в кубе</label>
 </div>
 <div>
     <input type="color" id="ACPColor" name="ACPColor" value="%ACPColor%">
-    <label for="ACPColor">Температура датчика в ТСА</label>
+    <input id="ACPLineEnable" type="checkbox" name="ACPLineEnable" value="%ACPLineEnable%" %ACPChecked%>
+    <label for="ACPLineEnable">Температура датчика в ТСА</label>
 </div>
 <div>
     <input type="color" id="PressureColor" name="PressureColor" value="%PressureColor%">
-    <label for="PressureColor">Атмосферное давление</label>
+    <input id="PressureLineEnable" type="checkbox" name="PressureLineEnable" value="%PressureLineEnable%" %PressureChecked%>
+    <label for="PressureLineEnable">Атмосферное давление</label>
 </div>
 <div>
     <input type="color" id="ProgNumColor" name="ProgNumColor" value="%ProgNumColor%">
-    <label for="ProgNumColor">Строка программы</label>
+    <input id="ProgNumLineEnable" type="checkbox" name="ProgNumLineEnable" value="%ProgNumLineEnable%" %ProgNumChecked%>
+    <label for="ProgNumLineEnable">Строка программы</label>
+</div>
+<div>
+    <input type="color" id="WFflowRateColor" name="WFflowRateColor" value="%WFflowRateColor%">
+    <input id="WFflowRateLineEnable" type="checkbox" name="WFflowRateLineEnable" value="%WFflowRateLineEnable%" %WFflowRateChecked%>
+    <label for="WFflowRateLineEnable">Скорость расхода воды</label>
+</div>
+<div>
+    <input type="color" id="PowerColor" name="PowerColor" value="%PowerColor%">
+    <input id="PowerLineEnable" type="checkbox" name="PowerLineEnable" value="%PowerLineEnable%" %PowerChecked%>
+    <label for="PowerLineEnable">Процент мощности</label>
 </div>
 </h2>
 <p><a href="https://www.w3schools.com/colors/colors_picker.asp" target="blank">цвета можно подобрать тут</a></p>

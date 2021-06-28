@@ -213,7 +213,7 @@ void create_data() {
   if(String(SamSetup.ProgNumColor) != "#ffffff") str += ",ProgNum";
 #endif
 #else
-  String str = "Date,Steam,Pipe,Water,Tank,Pressure";
+  String str = "Date,Steam,Pipe,Water,Tank,ACP,Pressure,WFflowRate,Power";
 #ifdef WRITE_PROGNUM_IN_LOG
   str += ",ProgNum";
 #endif
@@ -269,7 +269,14 @@ String IRAM_ATTR append_data() {
   str += ",";
   str += format_float(TankSensor.avgTemp, 3);
   str += ",";
+  str += format_float(ACPSensor.avgTemp, 3);
+  str += ",";
   str += format_float(bme_pressure, 2);
+  str += ",";
+  str += format_float(WFflowRate, 2);
+  str += ",";
+  str += format_float(target_power_percent, 1);
+  
 
 #ifdef WRITE_PROGNUM_IN_LOG
   str += ",";
