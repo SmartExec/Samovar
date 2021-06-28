@@ -773,7 +773,36 @@ void IRAM_ATTR set_power(bool On) {
 // SAMOVAR_USE_POWER
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////
 #ifdef SAMOVAR_USE_POWER
-#ifndef SAMOVAR_USE_RMVK
+#ifdef USER_USE_POWER
+void IRAM_ATTR triggerPowerStatus(void *parameter) {
+  user_trigger_power_status(parameter);
+}
+#elif SAMOVAR_USE_RMVK
+void IRAM_ATTR triggerPowerStatus(void *parameter) {
+  String resp;
+  while (true) {
+    if (PowerOn) {
+      resp = "";
+      Serial2.flush();
+      Serial2.print("АТ+VO?\r");
+      vTaskDelay(350);
+      if (Serial2.available()) {
+        resp = Serial2.readStringUntil('\r');
+      }
+      current_power_volt = resp.toInt();
+      Serial2.flush();
+      Serial2.print("АТ+VS?\r");
+      vTaskDelay(350);
+      resp = "";
+      if (Serial2.available()) {
+        resp = Serial2.readStringUntil('\r');
+      }
+      target_power_volt = resp.toInt();
+    }
+    vTaskDelay(100);
+  }
+}
+#else
 void IRAM_ATTR triggerPowerStatus(void *parameter) {
   int i;
   String resp;
@@ -798,31 +827,6 @@ void IRAM_ATTR triggerPowerStatus(void *parameter) {
       }
     }
     vTaskDelay(600);
-  }
-}
-#else
-void IRAM_ATTR triggerPowerStatus(void *parameter) {
-  String resp;
-  while (true) {
-    if (PowerOn) {
-      resp = "";
-      Serial2.flush();
-      Serial2.print("АТ+VO?\r");
-      vTaskDelay(350);
-      if (Serial2.available()) {
-        resp = Serial2.readStringUntil('\r');
-      }
-      current_power_volt = resp.toInt();
-      Serial2.flush();
-      Serial2.print("АТ+VS?\r");
-      vTaskDelay(350);
-      resp = "";
-      if (Serial2.available()) {
-        resp = Serial2.readStringUntil('\r');
-      }
-      target_power_volt = resp.toInt();
-    }
-    vTaskDelay(100);
   }
 }
 #endif
@@ -853,7 +857,9 @@ void IRAM_ATTR set_current_power(float Volt) {
     vTaskDelay(800);
   }
   vTaskSuspend(PowerStatusTask);
-#ifdef SAMOVAR_USE_RMVK
+#ifdef USER_USE_POWER
+  user_set_current_power(Volt);
+#elif SAMOVAR_USE_RMVK
   String Cmd;
   int V = Volt;
   if (V < 100) Cmd = "0";
@@ -872,7 +878,9 @@ void IRAM_ATTR set_power_mode(String Mode) {
   vTaskSuspend(PowerStatusTask);
   vTaskDelay(50);
   current_power_mode = Mode;
-#ifdef SAMOVAR_USE_RMVK
+#ifdef USER_USE_POWER
+  user_set_power_mode(Mode);
+#elif SAMOVAR_USE_RMVK
   if (Mode == POWER_SLEEP_MODE) {
     Serial2.print("АТ+ON=0\r");
     //set_current_power(0);
