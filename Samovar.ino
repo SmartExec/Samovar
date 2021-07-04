@@ -269,13 +269,21 @@ void IRAM_ATTR triggerSysTicker(void *parameter) {
           tcntST = 0;
           String s = append_data();  //Записываем данные в память ESP32;
 #ifdef USE_OPENLOG
+          if (s != "") {
+            s += ",";
+            s += format_float(ActualVolumePerHour, 3);
 #ifdef SAMOVAR_USE_POWER
-          s += ",";
-          s += (String)target_power_volt;
-          s += ",";
-          s += (String)current_power_p;
+            s += ",";
+            s += (String)target_power_volt;
+            s += ",";
+            s += (String)current_power_p;
 #endif
-          appendOLFile(s);
+#ifdef USE_WATERSENSOR
+            s += ",";
+            s += format_float(WFflowRate, 2);
+#endif
+            appendOLFile(s);
+          }
 #endif
         }
       }
@@ -502,10 +510,9 @@ void setup() {
   // Частоты 500 и 2500 - подобраны для моего серво-привода. Возможно, для других частоты могут отличаться
   // 544 и 2400 - стандартные частоты
   servo.attach(SERVO_PIN, 500, 2500);  // attaches the servo
-#elif USER_SERVO
+#elseif USER_SERVO
   user_servo_init();
 #endif
-
 
   //Читаем сохраненную конфигурацию
   read_config();
@@ -743,6 +750,9 @@ void setup() {
   //На всякий случай пошлем команду выключения питания на UART
   set_power_mode(POWER_SLEEP_MODE);
 #endif
+#ifdef USER_SETUP
+  USER_SETUP
+#endif
 }
 
 void loop() {
@@ -865,6 +875,9 @@ void loop() {
     vTaskDelete(BuzzerTask);
     BuzzerTask = NULL;
   }
+#ifdef USER_LOOP
+  USER_LOOP
+#endif
 }
 
 void getjson(void) {

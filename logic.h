@@ -307,7 +307,7 @@ void IRAM_ATTR set_capacity(byte cap) {
 #ifdef SERVO_PIN
   int p = ((int)cap * SERVO_ANGLE) / (int)CAPACITY_NUM + servoDelta[cap];
   servo.write(p);
-#elif USER_SERVO
+#elif defined(USER_SERVO)
   user_set_capacity(cap);
 #endif
 }
@@ -517,7 +517,9 @@ void IRAM_ATTR check_alarm() {
   //Если программа - предзахлеб, и сброс напряжения был больше TIME_C минут назад, то возвращаем напряжение к последнему сохраненному - 0.5
   if (alarm_c_min > 0 && alarm_c_min <= millis()) {
     if (program[ProgramNum].WType == "C") {
+      if (prev_target_power_volt == 0) prev_target_power_volt = target_power_volt + 2;
       set_current_power(prev_target_power_volt - 0.5);
+      prev_target_power_volt = 0;
     }
     alarm_c_min = 0;
     //запускаем счетчик - TIME_C минут, нужен для повышения текущего напряжения чтобы поймать предзахлеб
@@ -526,7 +528,7 @@ void IRAM_ATTR check_alarm() {
   //Если программа предзахлеб и давно не было повышения срабатывания датчика - повышаем напряжение
   if (alarm_c_low_min > 0 && alarm_c_low_min <= millis()) {
     if (program[ProgramNum].WType == "C") {
-      set_current_power(prev_target_power_volt + 0.5);
+      set_current_power(target_power_volt + 0.5);
     }
     alarm_c_low_min = 0;
   }
@@ -628,6 +630,7 @@ void IRAM_ATTR check_alarm() {
       alarm_c_min = millis() + 1000 * 60 * TIME_C;
       //счетчик для повышения напряжения сбрасываем
       alarm_c_low_min = 0;
+      if (prev_target_power_volt == 0) prev_target_power_volt = target_power_volt;
 #endif
     }
 #ifdef SAMOVAR_USE_POWER
@@ -777,7 +780,7 @@ void IRAM_ATTR set_power(bool On) {
 void IRAM_ATTR triggerPowerStatus(void *parameter) {
   user_trigger_power_status(parameter);
 }
-#elif SAMOVAR_USE_RMVK
+#elif defined(SAMOVAR_USE_RMVK)
 void IRAM_ATTR triggerPowerStatus(void *parameter) {
   String resp;
   while (true) {
@@ -847,7 +850,6 @@ void IRAM_ATTR get_current_power() {
 void IRAM_ATTR set_current_power(float Volt) {
   if (!PowerOn) return;
   vTaskDelay(100);
-  prev_target_power_volt = target_power_volt;
   target_power_volt = Volt;
   if (Volt < 40) {
     set_power_mode(POWER_SLEEP_MODE);
@@ -859,7 +861,7 @@ void IRAM_ATTR set_current_power(float Volt) {
   vTaskSuspend(PowerStatusTask);
 #ifdef USER_USE_POWER
   user_set_current_power(Volt);
-#elif SAMOVAR_USE_RMVK
+#elif defined(SAMOVAR_USE_RMVK)
   String Cmd;
   int V = Volt;
   if (V < 100) Cmd = "0";
@@ -880,13 +882,17 @@ void IRAM_ATTR set_power_mode(String Mode) {
   current_power_mode = Mode;
 #ifdef USER_USE_POWER
   user_set_power_mode(Mode);
-#elif SAMOVAR_USE_RMVK
+#elif defined(SAMOVAR_USE_RMVK)
   if (Mode == POWER_SLEEP_MODE) {
+#ifdef SAMOVAR_USE_SEM_AVR    
+    set_current_power(0);
+#endif
     Serial2.print("АТ+ON=0\r");
-    //set_current_power(0);
   } else if (Mode == POWER_SPEED_MODE) {
     Serial2.print("АТ+ON=1\r");
-    //set_current_power(5000);
+#ifdef SAMOVAR_USE_SEM_AVR    
+    set_current_power(240);
+#endif
   }
 #else
   Serial2.print("M" + Mode + "\r");
